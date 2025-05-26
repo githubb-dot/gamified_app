@@ -1,0 +1,11 @@
+
+# Python build artifacts
+__pycache__/
+*.py[cod]
+
+# Virtual-env
+venv/
+
+# Node
+frontend/node_modules/
+

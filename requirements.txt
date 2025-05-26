@@ -1,0 +1,8 @@
+fastapi >= 0.110      # FastAPI that works with Pydantic v2
+uvicorn[standard] >= 0.29
+pydantic >= 2.6
+SQLAlchemy >= 2.0
+psycopg2-binary >= 2.9      # Needed the moment you talk to Postgres
+python-dotenv >= 1.0
+openai >= 1.14        # 'main.py' instantiates an OpenAI client
+pydantic[email]
