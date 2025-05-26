@@ -3,7 +3,7 @@
 ## Phase 1: Backend Development (FastAPI & SQLModel)
 
 ### Sprint 0: Setup (Completed by User/Initial State)
-- [ ] Set up mono-repo (structure for backend/frontend) - *Assuming a simplified structure for now.*
+- [x] Set up mono-repo (structure for backend/frontend) - *Assuming a simplified structure for now.*
 - [ ] Initialize CI pipeline (GitHub Actions with pytest + lint) - *Skipping for now, can be added later if requested.*
 
 ### Sprint 1: Data Model and Database Setup
