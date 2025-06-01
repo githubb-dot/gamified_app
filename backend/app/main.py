@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from openai import OpenAI
 import os, dotenv
+from .routers import quests
 
 dotenv.load_dotenv()
 
@@ -10,6 +11,7 @@ client = OpenAI(
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 app = FastAPI(title="Alone I Level Up API")
+app.include_router(quests.router)
 
 class QuestRequest(BaseModel):
     goal: str

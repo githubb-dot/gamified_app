@@ -10,7 +10,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID # For PostgreSQL specific UUID type
 from sqlalchemy.types import UUID as SQLAlchemy_UUID # Generic UUID type
 
-from database import Base # Import Base from database.py
+from .database import Base # Import Base from database.py (errors currently for this)
 
 # --- SQLAlchemy ORM Models ---
 
