@@ -7,7 +7,7 @@ from .routers import quests
 dotenv.load_dotenv()
 
 client = OpenAI(
-    api_key="AIzaSyCGenom5_GzoDLBZq-_KujTEodisBWR6OI",
+    api_key="AIzaSyCGenom5_GzoDLBZq-_KujTEodisBWR6OI", 
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 app = FastAPI(title="Alone I Level Up API")

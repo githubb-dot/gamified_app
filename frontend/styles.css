@@ -1,0 +1,97 @@
+/* Custom styles for Alone, I Level Up app */
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #0f172a;
+    color: #f8fafc;
+}
+
+/* Stat bar animations */
+.stat-bar-animate {
+    transition: width 0.5s ease-out;
+}
+
+/* Quest item hover effects */
+.quest-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quest-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Notification animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.notification-enter {
+    animation: slideIn 0.3s forwards;
+}
+
+.notification-exit {
+    animation: slideOut 0.3s forwards;
+}
+
+/* Solo Leveling inspired elements */
+.solo-title {
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.solo-title.negative {
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+/* XP gain/loss animations */
+@keyframes xpGain {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.xp-gain {
+    animation: xpGain 0.5s ease-out;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3b82f6;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #2563eb;
+}

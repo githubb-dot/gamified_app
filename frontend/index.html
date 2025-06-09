@@ -1,13 +1,405 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alone, I Level Up</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white font-sans min-h-screen">
+    <div id="app" class="flex flex-col min-h-screen">
+        <!-- Auth screens -->
+        <div v-if="!isAuthenticated" class="flex flex-col items-center justify-center min-h-screen p-4">
+            <div class="w-full max-w-md">
+                <!-- Login form -->
+                <div v-if="authScreen === 'login'" class="bg-gray-800 rounded-lg shadow-lg p-6 mb-4">
+                    <h1 class="text-3xl font-bold text-center mb-6 text-blue-400 solo-title">Alone, I Level Up</h1>
+                    <div class="mb-4">
+                        <label class="block text-gray-300 mb-2" for="username">Username</label>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            v-model="loginForm.username" 
+                            class="w-full px-4 py-2 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
+                            placeholder="Enter your username"
+                        >
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-300 mb-2" for="password">Password</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            v-model="loginForm.password" 
+                            class="w-full px-4 py-2 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
+                            placeholder="Enter your password"
+                        >
+                    </div>
+                    <button 
+                        @click="login" 
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300"
+                    >
+                        Login
+                    </button>
+                    <div class="text-center mt-4">
+                        <p class="text-gray-400">
+                            Don't have an account? 
+                            <a @click="authScreen = 'register'" class="text-blue-400 hover:text-blue-300 cursor-pointer">Register</a>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Register form -->
+                <div v-if="authScreen === 'register'" class="bg-gray-800 rounded-lg shadow-lg p-6">
+                    <h1 class="text-3xl font-bold text-center mb-6 text-blue-400 solo-title">Join the Adventure</h1>
+                    <div class="mb-4">
+                        <label class="block text-gray-300 mb-2" for="reg-username">Username</label>
+                        <input 
+                            type="text" 
+                            id="reg-username" 
+                            v-model="registerForm.username" 
+                            class="w-full px-4 py-2 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
+                            placeholder="Choose a username"
+                        >
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-300 mb-2" for="reg-email">Email</label>
+                        <input 
+                            type="email" 
+                            id="reg-email" 
+                            v-model="registerForm.email" 
+                            class="w-full px-4 py-2 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
+                            placeholder="Enter your email"
+                        >
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-300 mb-2" for="reg-password">Password</label>
+                        <input 
+                            type="password" 
+                            id="reg-password" 
+                            v-model="registerForm.password" 
+                            class="w-full px-4 py-2 rounded bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
+                            placeholder="Create a password"
+                        >
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-gray-300 mb-2">What would you like to improve?</label>
+                        <div v-for="(goal, index) in registerForm.improvement_goals" :key="index" class="flex mb-2">
+                            <input 
+                                type="text" 
+                                v-model="registerForm.improvement_goals[index]" 
+                                class="flex-grow px-4 py-2 rounded-l bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
+                                placeholder="e.g., Fitness, Learning, Social skills"
+                            >
+                            <button 
+                                @click="removeImprovementGoal(index)" 
+                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-r transition duration-300"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <button 
+                            @click="addImprovementGoal" 
+                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm transition duration-300 w-full"
+                        >
+                            + Add Another Improvement Goal
+                        </button>
+                    </div>
+                    <button 
+                        @click="register" 
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300"
+                    >
+                        Register
+                    </button>
+                    <div class="text-center mt-4">
+                        <p class="text-gray-400">
+                            Already have an account? 
+                            <a @click="authScreen = 'login'" class="text-blue-400 hover:text-blue-300 cursor-pointer">Login</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main app after authentication -->
+        <div v-if="isAuthenticated" class="flex flex-col min-h-screen">
+            <!-- Header -->
+            <header class="bg-gray-800 shadow-md">
+                <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+                    <h1 class="text-2xl font-bold text-blue-400 solo-title" :class="{'negative': dashboard.title === 'Alone, I Level Down'}">
+                        {{ dashboard.title }}
+                    </h1>
+                    <div class="flex items-center">
+                        <span class="mr-4 text-gray-300">{{ user.username }}</span>
+                        <button 
+                            @click="logout" 
+                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm transition duration-300"
+                        >
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main content -->
+            <main class="flex-grow container mx-auto px-4 py-8">
+                <!-- Level and XP display -->
+                <div class="mb-8 p-6 rounded-lg" :class="dashboard.title === 'Alone, I Level Up' ? 'bg-blue-900/30' : 'bg-red-900/30'">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2 class="text-2xl font-bold" :class="dashboard.title === 'Alone, I Level Up' ? 'text-blue-400' : 'text-red-400'">
+                            Level {{ dashboard.level.level }}
+                        </h2>
+                        <span class="text-gray-300">{{ dashboard.level.total_xp }} XP</span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-2.5 mb-2">
+                        <div 
+                            class="h-2.5 rounded-full bg-blue-500" 
+                            :style="{ width: dashboard.level.progress_percent + '%' }"
+                        ></div>
+                    </div>
+                    <div class="flex justify-between text-xs text-gray-400">
+                        <span>{{ dashboard.level.total_xp % 1000 }} / 1000 XP</span>
+                        <span>Next Level: {{ dashboard.level.level + 1 }}</span>
+                    </div>
+                </div>
+
+                <!-- Attribute Points Allocation (if available) -->
+                <div v-if="dashboard.level.available_points > 0" class="mb-8 p-6 rounded-lg bg-green-900/30">
+                    <h2 class="text-2xl font-bold text-green-400 mb-4">
+                        Attribute Points Available: {{ dashboard.level.available_points }}
+                    </h2>
+                    <p class="text-gray-300 mb-4">Allocate your points to increase your stats!</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div v-for="(value, name) in dashboard.stats" :key="name" class="bg-gray-800 rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-gray-300 capitalize">{{ name }}</span>
+                                <span :class="value >= 0 ? 'text-green-400' : 'text-red-400'">{{ value }}</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2.5 mb-2">
+                                <div 
+                                    class="h-2.5 rounded-full" 
+                                    :class="getStatBarColor(value)"
+                                    :style="{ width: calculateStatWidth(value) }"
+                                ></div>
+                            </div>
+                            <button 
+                                @click="allocatePoint(name)" 
+                                class="w-full mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm transition duration-300"
+                            >
+                                Allocate +1 Point
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats section -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-100">Your Stats</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div v-for="(value, name) in dashboard.stats" :key="name" class="bg-gray-800 rounded-lg p-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-gray-300 capitalize">{{ name }}</span>
+                                <span :class="value >= 0 ? 'text-green-400' : 'text-red-400'">{{ value }}</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                <div 
+                                    class="h-2.5 rounded-full" 
+                                    :class="getStatBarColor(value)"
+                                    :style="{ width: calculateStatWidth(value) }"
+                                ></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Optional Quests section -->
+                <div v-if="dashboard.optional_quests && dashboard.optional_quests.length > 0" class="mb-8">
+                    <h2 class="text-2xl font-bold mb-4 text-yellow-400">⚠️ Time-Limited Optional Quests</h2>
+                    
+                    <div v-for="quest in dashboard.optional_quests" :key="quest.id" class="bg-yellow-900/30 rounded-lg p-4 mb-4 border-l-4 border-yellow-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-medium text-yellow-300">{{ quest.text }}</h3>
+                            <div class="flex">
+                                <span v-for="n in quest.difficulty" :key="n" class="text-yellow-400">★</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-400 mb-4">
+                            <span>Reward: <span class="text-yellow-400">{{ quest.reward_xp }} XP</span></span>
+                            <span>Expires: {{ formatDate(quest.expiration_time) }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-400 mb-4">
+                            <span>Primary Stat: <span class="text-yellow-400 capitalize">{{ quest.primary_stat }}</span></span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button 
+                                @click="completeQuest(quest.id)" 
+                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm flex-1 transition duration-300"
+                            >
+                                Complete
+                            </button>
+                            <button 
+                                @click="failQuest(quest.id)" 
+                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm flex-1 transition duration-300"
+                            >
+                                Fail
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Quests section -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-gray-100">Daily Quests</h2>
+                        <button 
+                            @click="generateSampleQuest" 
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition duration-300"
+                        >
+                            Generate Quest
+                        </button>
+                    </div>
+                    
+                    <div v-if="dashboard.daily_quests.length === 0" class="bg-gray-800 rounded-lg p-6 text-center">
+                        <p class="text-gray-400">No quests available. Generate a new quest to get started!</p>
+                    </div>
+                    
+                    <div v-for="quest in dashboard.daily_quests" :key="quest.id" class="bg-gray-800 rounded-lg p-4 mb-4 border-l-4 border-blue-500">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-lg font-medium text-gray-100">{{ quest.text }}</h3>
+                            <div class="flex">
+                                <span v-for="n in quest.difficulty" :key="n" class="text-yellow-400">★</span>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-400 mb-4">
+                            <span>Reward: {{ quest.reward_xp }} XP</span>
+                            <span>Due: {{ formatDate(quest.due_date) }}</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-400 mb-4">
+                            <span>Primary Stat: <span class="text-blue-400 capitalize">{{ quest.primary_stat }}</span></span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button 
+                                @click="completeQuest(quest.id)" 
+                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm flex-1 transition duration-300"
+                            >
+                                Complete
+                            </button>
+                            <button 
+                                @click="failQuest(quest.id)" 
+                                class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm flex-1 transition duration-300"
+                            >
+                                Fail
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goals section -->
+                <div>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-gray-100">Your Improvement Goals</h2>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-lg p-4 mb-4">
+                        <div class="flex items-center mb-4">
+                            <input 
+                                type="text" 
+                                v-model="newGoal.description" 
+                                placeholder="Enter a new improvement goal..." 
+                                class="flex-grow px-4 py-2 rounded-l bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
+                            >
+                            <select 
+                                v-model="newGoal.category" 
+                                class="px-4 py-2 bg-gray-700 text-white border border-gray-600 focus:outline-none focus:border-blue-500"
+                            >
+                                <option value="">Category</option>
+                                <option value="physical">Physical</option>
+                                <option value="learning">Learning</option>
+                                <option value="routine">Routine</option>
+                                <option value="concentration">Concentration</option>
+                                <option value="social">Social</option>
+                                <option value="challenge">Challenge</option>
+                            </select>
+                            <button 
+                                @click="createGoal" 
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r transition duration-300"
+                            >
+                                Add
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div v-if="goals.length === 0" class="bg-gray-800 rounded-lg p-6 text-center">
+                        <p class="text-gray-400">No goals yet. Add a goal to start your journey!</p>
+                    </div>
+                    
+                    <div v-for="goal in goals" :key="goal.id" class="bg-gray-800 rounded-lg p-4 mb-4 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-medium text-gray-100">{{ goal.description }}</h3>
+                            <span class="text-sm text-gray-400 capitalize">{{ goal.category || 'No category' }}</span>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button 
+                                @click="generateQuestForGoal(goal.description)" 
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition duration-300"
+                            >
+                                Generate Quest
+                            </button>
+                            <button 
+                                @click="deleteGoal(goal.id)" 
+                                class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition duration-300"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="bg-gray-800 py-4">
+                <div class="container mx-auto px-4 text-center text-gray-400">
+                    <p>Alone, I Level Up - A Solo Leveling Inspired App</p>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Notifications -->
+        <div id="notifications" class="fixed top-4 right-4 z-50 w-80">
+            <div v-for="notification in notifications" :key="notification.id" 
+                class="mb-4 p-4 rounded-lg shadow-lg transform transition-all duration-500 ease-in-out notification-enter"
+                :class="notification.type === 'success' ? 'bg-green-800 border-l-4 border-green-500' : 
+                        notification.type === 'error' ? 'bg-red-800 border-l-4 border-red-500' : 
+                        notification.type === 'warning' ? 'bg-yellow-800 border-l-4 border-yellow-500' :
+                        'bg-blue-800 border-l-4 border-blue-500'"
+            >
+                <div class="flex justify-between">
+                    <h4 class="font-bold text-white">{{ notification.title }}</h4>
+                    <button @click="removeNotification(notification.id)" class="text-white">&times;</button>
+                </div>
+                <p class="text-white">{{ notification.message }}</p>
+            </div>
+        </div>
+        
+        <!-- Level Up Animation -->
+        <div v-if="showLevelUpAnimation" class="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-70">
+            <div class="text-center p-8 rounded-lg transform scale-up">
+                <h2 class="text-5xl font-bold text-yellow-400 mb-4 animate-pulse">LEVEL UP!</h2>
+                <p class="text-3xl text-white mb-6">You reached Level {{ levelUpDetails.newLevel }}!</p>
+                <p class="text-xl text-green-400 mb-8">+{{ levelUpDetails.pointsGained }} Attribute Points</p>
+                <button @click="showLevelUpAnimation = false" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg text-lg transition duration-300">
+                    Continue
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="/app.js"></script>
+</body>
 </html>
